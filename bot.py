@@ -10,8 +10,8 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 import telegram
 from telegram.ext import Application, CallbackContext, CallbackQueryHandler, CommandHandler
 import json
-# import os
-# PORT = int(os.environ.get('PORT', 5000))
+import os
+PORT = int(os.environ.get('PORT', 8081))
 
 # Enable logging
 logging.basicConfig(
@@ -116,12 +116,18 @@ def main() -> None:
 
     application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
 
-    # application.run_webhook(listen="0.0.0.0",
-    #                       port=int(PORT),
-    #                       url_path=config_js["BOT_TOKEN"])
-    # application.bot.setWebhook('https://artstation-tg-bot.herokuapp.com/' + config_js["BOT_TOKEN"])
-    application.run_polling()
-# application.start()
+    application.bot.setWebhook('https://artstation-tg-bot.herokuapp.com/' + config_js["BOT_TOKEN"])
+    application.run_webhook(listen="0.0.0.0",
+                          port=int(PORT),
+                          url_path=config_js["BOT_TOKEN"])
+    # application.run_polling()
+    # update_queue = application.update_queue
+    # start_fetching_updates(update_queue)
+
+    # Start and run the application
+    # async with application:
+    application.start()
+    # application.updater.bot.
 # application.updater.start_polling()
 # application.
 
