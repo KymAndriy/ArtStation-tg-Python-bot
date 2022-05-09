@@ -88,13 +88,16 @@ async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
 
 async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwokr_name, art_url):
 
+    qu = update.callback_query
+    await qu.answer()
+    await qu.edit_message_text("You chose: " + artwokr_name)
+    await update.callback_query.get_bot().sendChatAction(chat_id=update.callback_query.message.chat_id, action = 'upload_photo')
     urls_hash = get_hash_urls(art_url)
-
     for i in urls_hash:
         photoes = get_artwork_image_url(i)
         for photo in photoes["images"]:
             try:
-                temp = photo
+                temp = photo.copy()
                 temp.replace("large", "4k")
                 await update.callback_query.message.reply_document(temp, disable_notification=True)
             except:
@@ -103,30 +106,9 @@ async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwok
                 except:
                     pass
         await update.callback_query.message.reply_html("\u2191 <a href=\"https://www.artstation.com/"+photoes["username"] + " \">"+photoes["username"]+"</a>",disable_notification=True, disable_web_page_preview=True)
-        
     await update.callback_query.message.reply_text(artwokr_name, reply_markup=mn, disable_notification=True)
 
 def main() -> None:
-# #     """Run the bot."""
-#     updater = Updater(config_js["BOT_TOKEN"])
-#     dp = updater.dispatcher
-#     # Add handlers
-#     dp.add_handler(CommandHandler('start', start))
-#     # dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
-#     dp.add_handler(CommandHandler("start", start))
-#     for k, v in config_js["KEYBOARD_MAP"].items():
-#         cb_str = str(k).replace('&', "and").replace("'","").replace('-','').lower()
-#         pointer = (lambda update, context, kk=k, vv=v: callback(update, context, kk, vv))
-#         dp.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
-
-#     dp.add_handler(CallbackQueryHandler(menu, pattern="menu"))
-
-    # Start the webhook
-    # updater.start_webhook(listen="0.0.0.0",
-    #                       port=int(PORT),
-    #                       url_path=config_js["BOT_TOKEN"],
-    #                       webhook_url="https://artstation-tg-bot.herokuapp.com/"+config_js["BOT_TOKEN"])
-    # updater.idle()
     application = Application.builder().token(config_js["BOT_TOKEN"]).build()
     application.add_handler(CommandHandler("start", start))
     for k, v in config_js["KEYBOARD_MAP"].items():
@@ -136,21 +118,10 @@ def main() -> None:
         application.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
 
     application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
+    application.run_polling(0.2)
+    # application.updater.start_polling()
+    # application.start()
 
-    # application.bot.setWebhook('https://artstation-tg-bot.herokuapp.com/' + config_js["BOT_TOKEN"])
-    # application.run_webhook(listen="0.0.0.0",
-    #                       port=int(PORT),
-    #                       url_path=config_js["BOT_TOKEN"])
-    application.run_polling()
-    # # update_queue = application.update_queue
-    # # start_fetching_updates(update_queue)
-
-    # # Start and run the application
-    # # async with application:
-    application.start()
-    # application.updater.bot.
-# application.updater.start_polling()
-# application.
 
 if __name__ == "__main__":
     main()
