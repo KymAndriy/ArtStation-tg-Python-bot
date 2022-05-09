@@ -107,47 +107,47 @@ async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwok
     await update.callback_query.message.reply_text(artwokr_name, reply_markup=mn, disable_notification=True)
 
 def main() -> None:
-#     """Run the bot."""
-    updater = Updater(config_js["BOT_TOKEN"])
-    dp = updater.dispatcher
-    # Add handlers
-    dp.add_handler(CommandHandler('start', start))
-    # dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
-    dp.add_handler(CommandHandler("start", start))
+# #     """Run the bot."""
+#     updater = Updater(config_js["BOT_TOKEN"])
+#     dp = updater.dispatcher
+#     # Add handlers
+#     dp.add_handler(CommandHandler('start', start))
+#     # dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+#     dp.add_handler(CommandHandler("start", start))
+#     for k, v in config_js["KEYBOARD_MAP"].items():
+#         cb_str = str(k).replace('&', "and").replace("'","").replace('-','').lower()
+#         pointer = (lambda update, context, kk=k, vv=v: callback(update, context, kk, vv))
+#         dp.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
+
+#     dp.add_handler(CallbackQueryHandler(menu, pattern="menu"))
+
+    # Start the webhook
+    # updater.start_webhook(listen="0.0.0.0",
+    #                       port=int(PORT),
+    #                       url_path=config_js["BOT_TOKEN"],
+    #                       webhook_url="https://artstation-tg-bot.herokuapp.com/"+config_js["BOT_TOKEN"])
+    # updater.idle()
+    application = Application.builder().token(config_js["BOT_TOKEN"]).build()
+    application.add_handler(CommandHandler("start", start))
     for k, v in config_js["KEYBOARD_MAP"].items():
         cb_str = str(k).replace('&', "and").replace("'","").replace('-','').lower()
         pointer = (lambda update, context, kk=k, vv=v: callback(update, context, kk, vv))
-        dp.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
 
-    dp.add_handler(CallbackQueryHandler(menu, pattern="menu"))
+        application.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
 
-    # Start the webhook
-    updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
-                          url_path=config_js["BOT_TOKEN"],
-                          webhook_url="https://artstation-tg-bot.herokuapp.com/"+config_js["BOT_TOKEN"])
-    updater.idle()
-    # application = Application.builder().token(config_js["BOT_TOKEN"]).build()
-    # application.add_handler(CommandHandler("start", start))
-    # for k, v in config_js["KEYBOARD_MAP"].items():
-    #     cb_str = str(k).replace('&', "and").replace("'","").replace('-','').lower()
-    #     pointer = (lambda update, context, kk=k, vv=v: callback(update, context, kk, vv))
-
-    #     application.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
-
-    # application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
+    application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
 
     # application.bot.setWebhook('https://artstation-tg-bot.herokuapp.com/' + config_js["BOT_TOKEN"])
     # application.run_webhook(listen="0.0.0.0",
     #                       port=int(PORT),
     #                       url_path=config_js["BOT_TOKEN"])
-    # # application.run_polling()
+    application.run_polling()
     # # update_queue = application.update_queue
     # # start_fetching_updates(update_queue)
 
     # # Start and run the application
     # # async with application:
-    # application.start()
+    application.start()
     # application.updater.bot.
 # application.updater.start_polling()
 # application.
