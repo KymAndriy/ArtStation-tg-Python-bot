@@ -11,7 +11,7 @@ import telegram
 from telegram.ext import Application, CallbackContext, CallbackQueryHandler, CommandHandler
 import json
 import os
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler
 
 PORT = int(os.environ.get('PORT', 8081))
 
