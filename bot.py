@@ -110,7 +110,7 @@ async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwok
     await update.callback_query.message.reply_text(artwokr_name, reply_markup=mn, disable_notification=True)
 
 def main() -> None:
-    token = config_js["BOT_TOKEN"]
+    token = "5316694860:AAFne0IJRAxoB17sxX2AOaw9EUNWCyxNa4E"
     application = Application.builder().token(config_js["BOT_TOKEN"]).build()
     application.add_handler(CommandHandler("start", start))
     for k, v in config_js["KEYBOARD_MAP"].items():
