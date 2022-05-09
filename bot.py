@@ -14,10 +14,10 @@ import json
 # PORT = int(os.environ.get('PORT', 5000))
 
 # Enable logging
-# logging.basicConfig(
-#     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-# )
-# logger = logging.getLogger(__name__)
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
+logger = logging.getLogger(__name__)
 
 
 final_image_regex = re.compile(r"https://\w+\.artstation\.com/p/assets/images([\w\d/-])+(\.jpg)")
@@ -104,23 +104,26 @@ async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwok
         
     await update.callback_query.message.reply_text(artwokr_name, reply_markup=mn, disable_notification=True)
 
-# def main() -> None:
+def main() -> None:
 #     """Run the bot."""
-application = Application.builder().token(config_js["BOT_TOKEN"]).build()
-application.add_handler(CommandHandler("start", start))
-for k, v in config_js["KEYBOARD_MAP"].items():
-    cb_str = str(k).replace('&', "and").replace("'","").replace('-','').lower()
-    pointer = (lambda update, context, kk=k, vv=v: callback(update, context, kk, vv))
+    application = Application.builder().token(config_js["BOT_TOKEN"]).build()
+    application.add_handler(CommandHandler("start", start))
+    for k, v in config_js["KEYBOARD_MAP"].items():
+        cb_str = str(k).replace('&', "and").replace("'","").replace('-','').lower()
+        pointer = (lambda update, context, kk=k, vv=v: callback(update, context, kk, vv))
 
-    application.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
+        application.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
 
-application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
+    application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
 
-# application.run_webhook(listen="0.0.0.0",
-#                       port=int(PORT),
-#                       url_path=config_js["BOT_TOKEN"])
-# application.bot.setWebhook('https://artstation-tg-bot.herokuapp.com/' + config_js["BOT_TOKEN"])
-application.run_polling()
+    # application.run_webhook(listen="0.0.0.0",
+    #                       port=int(PORT),
+    #                       url_path=config_js["BOT_TOKEN"])
+    # application.bot.setWebhook('https://artstation-tg-bot.herokuapp.com/' + config_js["BOT_TOKEN"])
+    application.run_polling()
+# application.start()
+# application.updater.start_polling()
+# application.
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
