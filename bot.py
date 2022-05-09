@@ -120,13 +120,14 @@ def main() -> None:
         application.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
 
     application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
+    application.process_update()
     # application.run_polling()
-    application.run_webhook(
-        listen='0.0.0.0',
-        port=PORT,
-        url_path=token,
-        webhook_url='https://artstation-tg-bot.herokuapp.com/'+token,
-    )
+    # application.run_webhook(
+    #     listen='0.0.0.0',
+    #     port=PORT,
+    #     url_path=token,
+    #     webhook_url='https://artstation-tg-bot.herokuapp.com/'+token,
+    # )
     # application.updater.start_polling()
     # application.start()
 
