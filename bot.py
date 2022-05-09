@@ -121,7 +121,7 @@ def main() -> None:
     application.run_webhook(listen="0.0.0.0",
                           port=int(PORT),
                           url_path=config_js["BOT_TOKEN"])
-    application.bot.setWebhook('https://yourherokuappname.herokuapp.com/' + config_js["BOT_TOKEN"])
+    application.bot.setWebhook('https://artstation-tg-bot.herokuapp.com/' + config_js["BOT_TOKEN"])
 
 
 if __name__ == "__main__":
