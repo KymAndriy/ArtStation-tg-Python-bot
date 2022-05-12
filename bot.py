@@ -95,17 +95,20 @@ async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwok
     await update.callback_query.get_bot().sendChatAction(chat_id=update.callback_query.message.chat_id, action = 'upload_photo')
     urls_hash = get_hash_urls(art_url)
     for i in urls_hash:
-        photoes = get_artwork_image_url(i)
-        for photo in photoes["images"]:
-            try:
-                temp = photo.copy()
-                temp.replace("large", "4k")
-                await update.callback_query.message.reply_document(temp, disable_notification=True)
-            except:
+        try:
+            photoes = get_artwork_image_url(i)
+            for photo in photoes["images"]:
                 try:
-                    await update.callback_query.message.reply_document(photo, disable_notification=True)
+                    temp = photo.copy()
+                    temp.replace("large", "4k")
+                    await update.callback_query.message.reply_document(temp, disable_notification=True)
                 except:
-                    pass
+                    try:
+                        await update.callback_query.message.reply_document(photo, disable_notification=True)
+                    except:
+                        pass
+        except:
+            pass
         await update.callback_query.message.reply_html("\u2191 <a href=\"https://www.artstation.com/"+photoes["username"] + " \">"+photoes["username"]+"</a>",disable_notification=True, disable_web_page_preview=True)
     await update.callback_query.message.reply_text(artwokr_name, reply_markup=mn, disable_notification=True)
 
