@@ -1,5 +1,5 @@
 {
-    "BOT_TOKEN": "5316694860:AAFne0IJRAxoB17sxX2AOaw9EUNWCyxNa4E",
+    "BOT_TOKEN": "",
     "FINAL_URL_REGEX": "https://\\w+\\.artstation\\.com/p/assets/images([\\w\\d/-])+(\\.jpg)",
     "HASH_IMAGE_REGEX": "https://www\\.artstation\\.com/artwork/([\\w\\d])+",
     "KEYBOARD_MAP": 

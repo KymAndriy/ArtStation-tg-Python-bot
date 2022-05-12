@@ -115,8 +115,8 @@ async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwok
     await update.callback_query.message.reply_text(artwokr_name, reply_markup=mn, disable_notification=True)
 
 def main() -> None:
-    token = "5316694860:AAFne0IJRAxoB17sxX2AOaw9EUNWCyxNa4E"
-    application = Application.builder().token(config_js["BOT_TOKEN"]).build()
+    token = config_js["BOT_TOKEN"]
+    application = Application.builder().token(token).build()
     # application = Updater(token, asyncio.Queue)
     # application = updater
     application.add_handler(CommandHandler("start", start))
