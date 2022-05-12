@@ -1,7 +1,9 @@
 """
 Bot created by Kym_Andriy
 """
+import asyncio
 import collections
+from email.mime import application
 import logging
 from multiprocessing.dummy import Process
 import requests
@@ -115,6 +117,8 @@ async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwok
 def main() -> None:
     token = "5316694860:AAFne0IJRAxoB17sxX2AOaw9EUNWCyxNa4E"
     application = Application.builder().token(config_js["BOT_TOKEN"]).build()
+    # application = Updater(token, asyncio.Queue)
+    # application = updater
     application.add_handler(CommandHandler("start", start))
     for k, v in config_js["KEYBOARD_MAP"].items():
         cb_str = str(k).replace('&', "and").replace("'","").replace('-','').lower()
@@ -124,16 +128,21 @@ def main() -> None:
 
     application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
     # application.process_update()
-    # application.run_polling()
+    application.run_polling()
+    # application.initialize()
+    # application.start_webhook(
+    print(application._running)
     application.updater.start_webhook(
         listen='0.0.0.0',
         port=PORT,
         url_path=token,
         webhook_url='https://artstation-tg-bot.herokuapp.com/'+token,
     )
-    # application.updater.
-    application.updater.start_polling()
-    application.start()
+    print(application._running)
+    # await application.start()
+    # # application.updater.
+    # application.updater.start_polling()
+    # application.start()
 
 
 # if __name__ == "__main__":
