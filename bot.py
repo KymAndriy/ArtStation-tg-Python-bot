@@ -16,6 +16,11 @@ import os
 from telegram.ext import Updater, CommandHandler, MessageHandler
 import threading
 
+##################
+# HEROKU_UNCOMMENT
+# PORT = int(os.environ.get('PORT', '8443'))
+##################
+
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -124,6 +129,15 @@ def main() -> None:
         application.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
     application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
     application.run_polling()
+    ##################
+    # HEROKU_UNCOMMENT
+    #application.updater.start_webhook(
+    #    listen='0.0.0.0',
+    #    port=PORT,
+    #    url_path=token,
+    #    webhook_url='https://artstation-tg-bot.herokuapp.com/'+token,
+    #)
+    ##################
 
 if __name__ == "__main__":
     main()
