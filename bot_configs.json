@@ -1,9 +1,9 @@
 {
     "BOT_TOKEN": "YOUR_TOKEN",
-    "FINAL_URL_REGEX": "https://\\w+\\.artstation\\.com/p/assets/images([\\w\\d/-])+(\\.jpg)",
-    "HASH_IMAGE_REGEX": "https://www\\.artstation\\.com/artwork/([\\w\\d])+",
+    "FINAL_IMAGE_URL_REGEX": "https://\\w+\\.artstation\\.com/p/assets/images([\\w\\d/-])+(\\.jpg)",
+    "HASH_IMAGE_URL_REGEX": "https://www\\.artstation\\.com/artwork/([\\w\\d])+",
     "KEYBOARD_MAP": 
-        {                       //you can change dimension from 'all' to '3d' or '2d' and per_page up to 100                                                                  this    and this
+        {
             "Anatomy":                                      "https://www.artstation.com/api/v2/community/channels/projects.json?channel_id=69&page=1&sorting=trending&dimension=all&per_page=30",
             "Abstract":                                     "https://www.artstation.com/api/v2/community/channels/projects.json?channel_id=70&page=1&sorting=trending&dimension=all&per_page=30",
             "Animals_&_Wildlfe":                            "https://www.artstation.com/api/v2/community/channels/projects.json?channel_id=71&page=1&sorting=trending&dimension=all&per_page=30",

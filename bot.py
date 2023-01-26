@@ -16,17 +16,23 @@ import os
 from telegram.ext import Updater, CommandHandler, MessageHandler
 import threading
 
-PORT = int(os.environ.get('PORT', '8443'))
-
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
+temp_str = ""
+with open("bot_configs.json","r") as f:
+    temp_str = f.read()
+config_js = json.loads(temp_str)
+temp_str = ""
 
-final_image_regex = re.compile(r"https://\w+\.artstation\.com/p/assets/images([\w\d/-])+(\.jpg)")
-hash_artwork_regex = re.compile(r"https://www\.artstation\.com/artwork/([\w\d])+")
+final_image_regex = re.compile(config_js["FINAL_IMAGE_URL_REGEX"])
+#final_image_regex = re.compile(r"https://\w+\.artstation\.com/p/assets/images([\w\d/-])+(\.jpg)")
+
+hash_artwork_regex = re.compile(config_js["HASH_IMAGE_URL_REGEX"])
+#hash_artwork_regex = re.compile(r"https://www\.artstation\.com/artwork/([\w\d])+")
 
 def get_hash_urls(url):
     content = [i.group() for i in hash_artwork_regex.finditer(str(requests.get(url).content))]
@@ -43,12 +49,6 @@ def get_artwork_image_url(hash):
             image_urls.remove(i)
     js = json.loads(response.content)
     return {"username": str(js["user"]["username"]),"images": image_urls}
-
-temp_str = ""
-with open("bot_configs.json","r") as f:
-    temp_str = f.read()
-config_js = json.loads(temp_str)
-temp_str = ""
 
 def prepare_keyboard():
     
@@ -117,33 +117,14 @@ async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwok
 def main() -> None:
     token = config_js["BOT_TOKEN"]
     application = Application.builder().token(token).build()
-    # application = Updater(token, asyncio.Queue)
-    # application = updater
     application.add_handler(CommandHandler("start", start))
     for k, v in config_js["KEYBOARD_MAP"].items():
         cb_str = str(k).replace('&', "and").replace("'","").replace('-','').lower()
         pointer = (lambda update, context, kk=k, vv=v:  callback(update, context, kk, vv))
-
         application.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
-
     application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
-    # application.process_update()
     application.run_polling()
-    # application.initialize()
-    # application.start_webhook(
-    print(application._running)
-    application.updater.start_webhook(
-        listen='0.0.0.0',
-        port=PORT,
-        url_path=token,
-        webhook_url='https://artstation-tg-bot.herokuapp.com/'+token,
-    )
-    print(application._running)
-    # await application.start()
-    # # application.updater.
-    # application.updater.start_polling()
-    # application.start()
 
+if __name__ == "__main__":
+    main()
 
-# if __name__ == "__main__":
-main()
