@@ -27,8 +27,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+################ CHANGE TO 'bot_congig.json'
 temp_str = ""
-with open("bot_configs.json","r") as f:
+with open("temp.json","r") as f:
     temp_str = f.read()
 config_js = json.loads(temp_str)
 temp_str = ""
@@ -97,8 +98,9 @@ async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
 async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwokr_name, art_url):
 
     qu = update.callback_query
+    art_name =  str(artwokr_name).replace("_"," ")
     await qu.answer()
-    await qu.edit_message_text("You chose: " + artwokr_name)
+    await qu.edit_message_text("Chosen theme: " + art_name)
     await update.callback_query.get_bot().sendChatAction(chat_id=update.callback_query.message.chat_id, action = 'upload_photo')
     urls_hash = get_hash_urls(art_url)
     for i in urls_hash:
@@ -117,7 +119,7 @@ async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwok
         except:
             pass
         await update.callback_query.message.reply_html("\u2191 <a href=\"https://www.artstation.com/"+photoes["username"] + " \">"+photoes["username"]+"</a>",disable_notification=True, disable_web_page_preview=True)
-    await update.callback_query.message.reply_text(artwokr_name, reply_markup=mn, disable_notification=True)
+    await update.callback_query.message.reply_text(art_name, reply_markup=mn, disable_notification=True)
 
 def main() -> None:
     token = config_js["BOT_TOKEN"]
