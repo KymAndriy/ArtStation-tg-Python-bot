@@ -61,19 +61,15 @@ def prepare_keyboard():
     keyboard = []
     counter = 0
     row = []
-    js_map = collections.OrderedDict(sorted(config_js["KEYBOARD_MAP"].items()))#{k:v for k,v in config_js["KEYBOARD_MAP"].items()}
+    pattern = config_js["KEYBOARD_NEW_LINE_PATTERN"]
+    js_map = collections.OrderedDict(sorted(config_js["KEYBOARD_MAP"].items()))
     for k, v in js_map.items():
         callback_str = str(k)
         callback_str = callback_str.replace('&', "and").replace("'","").replace('-','').lower()
         key = InlineKeyboardButton((str(k).replace('_'," ")), callback_data=callback_str)
-        if (counter != 0) and ((counter % 3) == 0) and  (len(row) != 0):
-            # row.append(key)
-            keyboard.append(row)
-            row = []
-            # continue
+        
         row.append(key)
-        if (len(k) > 14) and len(row) != 0:
-            # row.append(key)
+        if pattern[counter] == 1:
             keyboard.append(row)
             row = []
         counter += 1
