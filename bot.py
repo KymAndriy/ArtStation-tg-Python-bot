@@ -15,6 +15,7 @@ import json
 import os
 from telegram.ext import Updater, CommandHandler, MessageHandler
 import threading
+from telegram.ext import filters
 
 ##################
 # HEROKU_UNCOMMENT
@@ -29,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 ################ CHANGE TO 'bot_congig.json'
 temp_str = ""
-with open("temp.json","r") as f:
+with open("bot_configs.json","r") as f:
     temp_str = f.read()
 config_js = json.loads(temp_str)
 temp_str = ""
@@ -57,7 +58,6 @@ def get_artwork_image_url(hash):
     return {"username": str(js["user"]["username"]),"images": image_urls}
 
 def prepare_keyboard():
-    
     keyboard = []
     counter = 0
     row = []
@@ -82,27 +82,44 @@ def prepare_keyboard():
 keyboard = prepare_keyboard()
 mn = InlineKeyboardMarkup([[InlineKeyboardButton("Menu", callback_data="menu")]])
 
-async def menu(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
-    """Sends a message with three inline buttons attached."""
-    reply_markup = InlineKeyboardMarkup(keyboard)
 
+async def getImagesByURL(update: Update, context: CallbackContext.DEFAULT_TYPE):
+    art_url = str(hash_artwork_regex.match(update.message.text).group())
+    art_url = art_url[(art_url.rfind("/") + 1):]
+    try:
+        photoes = get_artwork_image_url(art_url)
+        for photo in photoes["images"]:
+            try:
+                temp = photo.copy()
+                temp.replace("large", "4k")
+                await update.message.reply_document(temp, disable_notification=True)
+            except:
+                try:
+                    await update.message.reply_document(photo, disable_notification=True)
+                except:
+                    pass
+    except:
+        pass
+    await update.message.reply_html("\u2191 <a href=\"https://www.artstation.com/"+photoes["username"] + " \">"+photoes["username"]+"</a>", reply_markup=mn, disable_notification=True, disable_web_page_preview=True)
+
+
+async def menu(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
+    reply_markup = InlineKeyboardMarkup(keyboard)
     await update.callback_query.message.reply_text("Show:", reply_markup=reply_markup)
 
 
 async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
-    """Sends a message with three inline buttons attached."""
     reply_markup = InlineKeyboardMarkup(keyboard)
-
     await update.message.reply_text("Please choose:", reply_markup=reply_markup)
 
 async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwokr_name, art_url):
-
     qu = update.callback_query
     art_name =  str(artwokr_name).replace("_"," ")
     await qu.answer()
     await qu.edit_message_text("Chosen theme: " + art_name)
     await update.callback_query.get_bot().sendChatAction(chat_id=update.callback_query.message.chat_id, action = 'upload_photo')
     urls_hash = get_hash_urls(art_url)
+    
     for i in urls_hash:
         try:
             photoes = get_artwork_image_url(i)
@@ -130,6 +147,7 @@ def main() -> None:
         pointer = (lambda update, context, kk=k, vv=v:  callback(update, context, kk, vv))
         application.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
     application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
+    application.add_handler(MessageHandler(filters=filters.Regex(hash_artwork_regex), callback=getImagesByURL))
     application.run_polling()
     ##################
     # HEROKU_UNCOMMENT
