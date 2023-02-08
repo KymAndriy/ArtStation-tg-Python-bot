@@ -2,6 +2,7 @@
     "BOT_TOKEN": "YOUR_TOKEN",
     "FINAL_IMAGE_URL_REGEX": "https://\\w+\\.artstation\\.com/p/assets/images([\\w\\d/-])+(\\.jpg)",
     "HASH_IMAGE_URL_REGEX": "https://www\\.artstation\\.com/artwork/([\\w\\d])+",
+    "KEYBOARD_NEW_LINE_PATTERN": [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     "KEYBOARD_MAP": 
         {
             "Anatomy":                                      "https://www.artstation.com/api/v2/community/channels/projects.json?channel_id=69&page=1&sorting=trending&dimension=all&per_page=30",
@@ -64,6 +65,7 @@
             "Weapons":                                      "https://www.artstation.com/api/v2/community/channels/projects.json?channel_id=126&page=1&sorting=trending&dimension=all&per_page=30",
             "Unreal_Engine":                                "https://www.artstation.com/api/v2/community/channels/projects.json?channel_id=127&page=1&sorting=trending&dimension=all&per_page=30",
             "Automotive":                                   "https://www.artstation.com/api/v2/community/channels/projects.json?channel_id=128&page=1&sorting=trending&dimension=all&per_page=30",
-            "The_Art_of_HALO_Infinite":                     "https://www.artstation.com/api/v2/community/channels/projects.json?channel_id=6212&page=1&sorting=trending&dimension=all&per_page=30"
+            "The_Art_of_HALO_Infinite":                     "https://www.artstation.com/api/v2/community/channels/projects.json?channel_id=6212&page=1&sorting=trending&dimension=all&per_page=30",
+            "Treanding":                                    "https://www.artstation.com/api/v2/community/explore/projects/trending.json?page=1&dimension=all&per_page=50"
         }
 }
