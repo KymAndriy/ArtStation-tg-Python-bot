@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 ################ CHANGE TO 'bot_congig.json'
 temp_str = ""
-with open("bot_configs.json","r") as f:
+with open("temp.json","r") as f:
     temp_str = f.read()
 config_js = json.loads(temp_str)
 temp_str = ""
@@ -101,7 +101,7 @@ async def getImagesByURL(update: Update, context: CallbackContext.DEFAULT_TYPE):
 
 async def menu(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.callback_query.message.reply_text("Show:", reply_markup=reply_markup)
+    await update.callback_query.message.reply_text("Please choose:", reply_markup=reply_markup)
 
 
 async def start(update: Update, context: CallbackContext.DEFAULT_TYPE) -> None:
