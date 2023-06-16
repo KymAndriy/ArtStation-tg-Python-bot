@@ -16,6 +16,7 @@ import os
 from telegram.ext import Updater, CommandHandler, MessageHandler
 import threading
 from telegram.ext import filters
+from fake_useragent import UserAgent
 
 ##################
 # HEROKU_UNCOMMENT
@@ -29,6 +30,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 ################ CHANGE TO 'bot_congig.json'
+user_agent = UserAgent()
+session = requests.Session()
+session.headers.update({'User-Agent': str(user_agent.chrome)})
+
 temp_str = ""
 with open("temp.json","r") as f:
     temp_str = f.read()
@@ -36,21 +41,25 @@ config_js = json.loads(temp_str)
 temp_str = ""
 
 final_image_regex = re.compile(config_js["FINAL_IMAGE_URL_REGEX"])
-#final_image_regex = re.compile(r"https://\w+\.artstation\.com/p/assets/images([\w\d/-])+(\.jpg)")
-
 hash_artwork_regex = re.compile(config_js["HASH_IMAGE_URL_REGEX"])
-#hash_artwork_regex = re.compile(r"https://www\.artstation\.com/artwork/([\w\d])+")
+user_profile_regex = re.compile(config_js["USER_PROFILE_URL_REGEX"])
 
-def get_hash_urls(url):
-    content = [i.group() for i in hash_artwork_regex.finditer(str(requests.get(url).content))]
+def get_hash_urls(url, header=None):
+    str_url = str(session.get(url, headers=header).content)
+    content = [i.group() for i in hash_artwork_regex.finditer(str_url)]
     content = [i[(i.rfind("/")+1):] for i in content]
     return content
 
 def get_artwork_image_url(hash):
-    response = requests.get(("https://www.artstation.com/projects/"+hash+".json"))
+    response = None
+    full_url = str("https://www.artstation.com/projects/" + hash + ".json")
+    try:
+        response = session.get(full_url)
+    except:
+        logger.warning("Get artwork image URL did not return any content, response status code - ")
+        return
     match_iterator = final_image_regex.finditer(str(response.content))
     image_urls = set([url_group.group().replace("medium", "large") for url_group in match_iterator])
-    # image_urls = set(i if (i.find("small") is not -1) else "" for i in image_urls)
     for i in image_urls:
         if i.find('small') != -1:
             image_urls.remove(i)
@@ -78,6 +87,38 @@ def prepare_keyboard():
 keyboard = prepare_keyboard()
 mn = InlineKeyboardMarkup([[InlineKeyboardButton("Menu", callback_data="menu")]])
 
+async def getUserFirstFourtyArtworks(update: Update, context: CallbackContext.DEFAULT_TYPE):
+    urls_hash =[] 
+    user_profile = update.message.text
+    profile_index = user_profile.rfind("/") + 1
+    user_profile = "https://www.artstation.com/users/" + user_profile[profile_index:] + "/projects.json" 
+    try:
+        urls_hash = get_hash_urls(user_profile, {'user-agent': 'my-app/0.0.1'})
+    except:
+        return
+    #urls_hash = urls_hash[:40] if len(urls_hash) > 40 else urls_hash
+    counter = -1
+    #await update.get_bot().sendChatAction(chat_id=update.message.chat_id, action = 'upload_photo')
+    for i in urls_hash:
+        counter = counter + 1
+        if counter > 40:
+            break
+        try:
+            photoes = get_artwork_image_url(i)
+            for photo in photoes["images"]:
+                try:
+                    temp = photo.copy()
+                    temp.replace("large", "4k")
+                    await update.message.reply_document(temp, disable_notification=True)
+                except:
+                    try:
+                        await update.message.reply_document(photo, disable_notification=True)
+                    except:
+                        pass
+        except:
+            pass
+    if counter != -1:
+        await update.message.reply_text("Please choose:", reply_markup=mn, disable_notification=True)
 
 async def getImagesByURL(update: Update, context: CallbackContext.DEFAULT_TYPE):
     art_url = str(hash_artwork_regex.match(update.message.text).group())
@@ -115,7 +156,7 @@ async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwok
     await qu.edit_message_text("Chosen theme: " + art_name)
     await update.callback_query.get_bot().sendChatAction(chat_id=update.callback_query.message.chat_id, action = 'upload_photo')
     urls_hash = get_hash_urls(art_url)
-    
+    photoes = None 
     for i in urls_hash:
         try:
             photoes = get_artwork_image_url(i)
@@ -130,8 +171,9 @@ async def callback(update: Update, context: CallbackContext.DEFAULT_TYPE, artwok
                     except:
                         pass
         except:
-            pass
-        await update.callback_query.message.reply_html("\u2191 <a href=\"https://www.artstation.com/"+photoes["username"] + " \">"+photoes["username"]+"</a>",disable_notification=True, disable_web_page_preview=True)
+            logger.error("loop exception")
+        if photoes != None:
+            await update.callback_query.message.reply_html("\u2191 <a href=\"https://www.artstation.com/"+photoes["username"] + " \">"+photoes["username"]+"</a>",disable_notification=True, disable_web_page_preview=True)
     await update.callback_query.message.reply_text(art_name, reply_markup=mn, disable_notification=True)
 
 def main() -> None:
@@ -144,6 +186,7 @@ def main() -> None:
         application.add_handler(CallbackQueryHandler(pointer, pattern=cb_str))
     application.add_handler(CallbackQueryHandler(menu, pattern="menu"))
     application.add_handler(MessageHandler(filters=filters.Regex(hash_artwork_regex), callback=getImagesByURL))
+    application.add_handler(MessageHandler(filters=filters.Regex(user_profile_regex), callback=getUserFirstFourtyArtworks))
     application.run_polling()
     ##################
     # HEROKU_UNCOMMENT
