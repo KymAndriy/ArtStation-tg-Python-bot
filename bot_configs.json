@@ -2,7 +2,7 @@
     "BOT_TOKEN": "YOUR_TOKEN",
     "FINAL_IMAGE_URL_REGEX": "https://\\w+\\.artstation\\.com/p/assets/images([\\w\\d/-])+(\\.jpg)",
     "HASH_IMAGE_URL_REGEX": "https://www\\.artstation\\.com/artwork/([\\w\\d])+",
-    "KEYBOARD_NEW_LINE_PATTERN": [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    "KEYBOARD_NEW_LINE_PATTERN": [0,1,0,1,1,1,0,1,0,1,0, 1,0,0,1,0,1,1,1,0,1, 1,1,1,1,0,1,0,1,1,0, 0,1,0,1,1,0,1,0,0,1, 1,0,1,0,0,1,1,1,1,1, 0,1,1,1,0,1,1,0,0,0],
     "KEYBOARD_MAP": 
         {
             "Anatomy":                                      "https://www.artstation.com/api/v2/community/channels/projects.json?channel_id=69&page=1&sorting=trending&dimension=all&per_page=30",
